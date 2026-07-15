@@ -3,6 +3,8 @@
 > El curso directo, sin relleno, para pasar de cero a entender cómo piensa un programador.
 > Ejemplos en **JavaScript**, el lenguaje que corre en todos los navegadores del mundo.
 
+### 🌐 [Empezar el curso →](https://50-conceptos-basicos.pages.dev/)
+
 ---
 
 ## ¿Para quién es este curso?
