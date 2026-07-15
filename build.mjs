@@ -1,11 +1,14 @@
-// Genera curso.html: app web de una sola página con portada, sidebar
-// de navegación y cada lección dividida en "steps" (por cada ##)
-// navegables con flechas ← →, a partir de los .md del curso.
+// Genera la app web (web/index.html + web/css/estilo.css + web/js/app.js):
+// portada, sidebar de navegación y cada lección dividida en "steps"
+// (por cada ##) navegables con flechas ← →, a partir de los .md del curso.
 import { marked } from "marked";
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = import.meta.dirname;
+const WEB = join(ROOT, "web");
+mkdirSync(join(WEB, "css"), { recursive: true });
+mkdirSync(join(WEB, "js"), { recursive: true });
 
 // --- Módulos e índice, extraídos del README ---
 const README = readFileSync(join(ROOT, "README.md"), "utf8");
@@ -150,14 +153,8 @@ unidades.forEach((u, i) => {
 
 const totalUnidades = unidades.length;
 
-const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>50 Conceptos Básicos para Aprender a Programar</title>
-<style>
-  :root {
+// --- CSS ---
+const css = `  :root {
     --azul: #4f7cff;
     --morado: #9b5de5;
     --rosa: #f15bb5;
@@ -384,7 +381,16 @@ const html = `<!DOCTYPE html>
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #2f3557; border-radius: 999px; }
   ::-webkit-scrollbar-thumb:hover { background: #3d456e; }
-</style>
+`;
+
+// --- HTML ---
+const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>50 Conceptos Básicos para Aprender a Programar</title>
+<link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
 
@@ -424,8 +430,12 @@ const html = `<!DOCTYPE html>
     </main>
   </div>
 
-<script>
-(function () {
+<script src="js/app.js"></script>
+</body>
+</html>`;
+
+// --- JS ---
+const js = `(function () {
   const portada = document.getElementById("portada");
   const app = document.getElementById("app");
   const sidebar = document.getElementById("sidebar");
@@ -591,10 +601,13 @@ const html = `<!DOCTYPE html>
     if (btn) btn.classList.add("completa");
   });
 })();
-</script>
-</body>
-</html>`;
+`;
 
-writeFileSync(join(ROOT, "curso.html"), html);
-writeFileSync(join(ROOT, "index.html"), html);
-console.log("✅ curso.html + index.html generados (" + (html.length / 1024).toFixed(0) + " KB) — " + unidades.length + " unidades");
+writeFileSync(join(WEB, "index.html"), html);
+writeFileSync(join(WEB, "css", "estilo.css"), css);
+writeFileSync(join(WEB, "js", "app.js"), js);
+console.log(
+  "✅ web/index.html (" + (html.length / 1024).toFixed(0) + " KB), " +
+  "web/css/estilo.css (" + (css.length / 1024).toFixed(0) + " KB), " +
+  "web/js/app.js (" + (js.length / 1024).toFixed(0) + " KB) — " + unidades.length + " unidades"
+);

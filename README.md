@@ -24,6 +24,22 @@ No necesitas instalar nada para empezar: puedes ejecutar todos los ejemplos en l
 
 ---
 
+## Sobre este repositorio
+
+Las lecciones viven como Markdown en `lecciones/` y `recursos/`. A partir de
+ahí, `build.mjs` genera la app web navegable en `web/` (`index.html`,
+`css/estilo.css`, `js/app.js`):
+
+```bash
+npm install
+npm run build   # regenera web/ a partir de los .md
+```
+
+Para verla en local, sirve la carpeta `web/` con cualquier servidor estático
+(por ejemplo `npx serve web`) y abre `index.html`.
+
+---
+
 ## Índice de las 50 lecciones
 
 ### Módulo 1 — Fundamentos
