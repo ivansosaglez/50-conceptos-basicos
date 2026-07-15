@@ -106,4 +106,4 @@ No necesitas instalar nada para empezar: puedes ejecutar todos los ejemplos en l
 
 ---
 
-© 2026 — Este material es de uso personal del comprador. Gracias por apoyar el trabajo independiente. ❤️
+© 2026 — Contenido gratuito y de acceso libre. Compártelo con quien esté aprendiendo a programar. ❤️

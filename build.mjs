@@ -596,4 +596,5 @@ const html = `<!DOCTYPE html>
 </html>`;
 
 writeFileSync(join(ROOT, "curso.html"), html);
-console.log("✅ curso.html generado (" + (html.length / 1024).toFixed(0) + " KB) — " + unidades.length + " unidades");
+writeFileSync(join(ROOT, "index.html"), html);
+console.log("✅ curso.html + index.html generados (" + (html.length / 1024).toFixed(0) + " KB) — " + unidades.length + " unidades");
