@@ -1,0 +1,11 @@
+{
+  "name": "50-conceptos-basicos",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "marked": "^18.0.5"
+  }
+}
