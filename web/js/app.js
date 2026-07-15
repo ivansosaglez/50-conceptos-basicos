@@ -61,9 +61,7 @@
 
     guardarEstado();
     actualizarProgresoGlobal();
-    window.scrollTo(0, 0);
-    const main = document.querySelector(".contenido");
-    if (main) main.scrollTop = 0;
+    if (app.classList.contains("activa")) app.scrollIntoView({ block: "start" });
     cerrarSidebarMovil();
   }
 
@@ -150,13 +148,34 @@
     if (e.key === "ArrowLeft") anterior(estado.unidad);
   });
 
-  function entrarAlCurso() {
-    portada.style.display = "none";
+  // ---------- Portada tipo cortina: sticky + scroll real ----------
+  // La portada queda fija arriba y el curso se desliza por encima al hacer scroll.
+  // Cuando .app cubre el viewport, se activa el curso y el scroll pasa a ser el suyo.
+  let yaEntro = false;
+
+  const appFooter = document.querySelector(".app-footer");
+  function activarCurso() {
+    if (yaEntro) return;
+    yaEntro = true;
     app.classList.add("activa");
     mostrarUnidad(estado.unidad || 0);
   }
 
+  const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach((entrada) => {
+      if (appFooter) appFooter.classList.toggle("visible", entrada.isIntersecting);
+      if (entrada.isIntersecting) activarCurso();
+    });
+  }, { threshold: 0.6 });
+  observador.observe(app);
+
+  function entrarAlCurso() {
+    app.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   btnEmpezar.addEventListener("click", entrarAlCurso);
+  const scrollHintBtn = portada.querySelector(".scroll-hint");
+  if (scrollHintBtn) scrollHintBtn.addEventListener("click", entrarAlCurso);
 
   // Marca como completas las unidades ya vistas al cargar
   Object.keys(estado.completadas).forEach((i) => {

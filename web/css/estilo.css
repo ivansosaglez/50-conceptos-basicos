@@ -11,14 +11,16 @@
     --code-bg: #121524;
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
   body {
     font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--texto); line-height: 1.7; font-size: 16px; margin: 0;
     background: var(--fondo);
   }
 
-  /* ---------- Portada ---------- */
+  /* ---------- Portada tipo "cortina": queda fija arriba (sticky) mientras el
+     curso, que va justo debajo en el flujo normal, se desliza por encima al
+     hacer scroll y la va tapando. Scroll real, sin cálculos de JS. ---------- */
   .portada {
     min-height: 100vh; display: flex; flex-direction: column;
     justify-content: center; align-items: center; text-align: center;
@@ -27,8 +29,35 @@
       radial-gradient(circle at 80% 30%, rgba(241,91,181,.28), transparent 50%),
       radial-gradient(circle at 50% 90%, rgba(79,124,255,.35), transparent 55%),
       linear-gradient(160deg, #12142a 0%, #191d3a 55%, #10122a 100%);
-    color: #fff; padding: 60px 24px; position: relative; overflow: hidden;
+    color: #fff; padding: 60px 24px; overflow: hidden;
+    position: sticky; top: 0; z-index: 0;
+    scroll-snap-align: start;
+    opacity: 0;
+    animation: aparecer-fondo 1s ease-out forwards;
   }
+  /* Animación de entrada al cargar: fade + subida suave, escalonada por elemento */
+  @keyframes aparecer-fondo {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes aparecer {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .portada .emoji,
+  .portada h1,
+  .portada .sub,
+  .portada .btn-empezar,
+  .portada .meta {
+    opacity: 0;
+    animation: aparecer .8s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  .portada .emoji { animation-delay: .1s; }
+  .portada h1 { animation-delay: .22s; }
+  .portada .sub { animation-delay: .34s; }
+  .portada .btn-empezar { animation-delay: .46s; }
+  .portada .meta { animation-delay: .58s; }
+
   .portada .emoji {
     font-size: 72px; margin-bottom: 18px;
     filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
@@ -63,15 +92,44 @@
   .btn-empezar:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(79,124,255,.55); }
   .btn-empezar:active { transform: translateY(0); }
   .scroll-hint {
-    position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: 28px; left: 50%; transform: translate(-50%, 24px);
     color: rgba(255,255,255,.7); font-size: 13px; display: flex; flex-direction: column;
-    align-items: center; gap: 6px; animation: rebote 2s infinite;
+    align-items: center; gap: 6px;
+    cursor: pointer; background: none; border: none; font-family: inherit;
+    opacity: 0;
+    animation: aparecer-hint .8s cubic-bezier(.22,1,.36,1) .7s forwards, rebote 2s ease-in-out 1.5s infinite;
+  }
+  .scroll-hint:hover { color: rgba(255,255,255,.95); }
+  @keyframes aparecer-hint {
+    from { opacity: 0; transform: translate(-50%, 24px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
   }
   @keyframes rebote { 0%,100% { transform: translate(-50%,0); } 50% { transform: translate(-50%,8px); } }
+  .portada-footer {
+    position: absolute; bottom: 14px; right: 18px;
+    font-size: 11.5px; color: rgba(255,255,255,.45);
+    opacity: 0;
+    animation: aparecer-fondo 1s ease-out .9s forwards;
+  }
 
-  /* ---------- Layout app ---------- */
-  .app { display: none; }
-  .app.activa { display: grid; grid-template-columns: 300px 1fr; min-height: 100vh; }
+  .app {
+    display: grid; grid-template-columns: 300px 1fr; min-height: 100vh;
+    position: relative; z-index: 1; background: var(--fondo);
+    scroll-snap-align: start;
+    box-shadow: 0 -40px 80px rgba(0,0,0,.5);
+  }
+  .app-footer {
+    position: fixed; bottom: 12px; right: 16px; z-index: 10;
+    font-size: 11px; color: var(--texto-tenue);
+    background: rgba(23,27,46,.85); backdrop-filter: blur(4px);
+    padding: 5px 10px; border-radius: 8px; border: 1px solid var(--borde);
+    pointer-events: none;
+    opacity: 0; visibility: hidden;
+    transition: opacity .3s ease;
+  }
+  .app-footer.visible {
+    opacity: 1; visibility: visible;
+  }
 
   /* Sidebar */
   .sidebar {
